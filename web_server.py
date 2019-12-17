@@ -16,7 +16,7 @@ class WSGIServer(object):
         # 3. 变为监听套接字
         self.tcp_server_socket.listen(128)
 
-    def service_client(new_socket):
+    def service_client(self, new_socket):
         """为这个客户端返回数据"""
 
         # 1. 接收浏览器发送过来的请求 ，即http请求
@@ -44,7 +44,7 @@ class WSGIServer(object):
         # 2. 返回http格式的数据，给浏览器
 
         try:
-            f = open("./html" + file_name, "rb")
+            f = open("/Users/jason/Study/html" + file_name, "rb")
         except:
             response = "HTTP/1.1 404 NOT FOUND\r\n"
             response += "\r\n"
@@ -86,8 +86,8 @@ class WSGIServer(object):
 
 def main():
     """控制整体,创建一个Web服务器对象，然后调用这个对象的run_forever方法"""
-    wsgi_Server = WSGIServer()
-    wsgi_Server.run_forever()
+    wsgi_server = WSGIServer()
+    wsgi_server.run_forever()
 
 
 if __name__ == "__main__":
