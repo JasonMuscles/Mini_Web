@@ -1,6 +1,8 @@
 import socket
 import re
 import multiprocessing
+import time
+import mini_frame
 
 
 class WSGIServer(object):
@@ -42,27 +44,38 @@ class WSGIServer(object):
                 file_name = "/index.html"
 
         # 2. 返回http格式的数据，给浏览器
+        # 非py结尾，那么就不是动态资源请求
+        if not file_name.endswith(".py"):
+            try:
+                f = open("/Users/jason/Study/html" + file_name, "rb")
+            except:
+                response = "HTTP/1.1 404 NOT FOUND\r\n"
+                response += "\r\n"
+                response += "------file not found-----"
+                new_socket.send(response.encode("utf-8"))
+            else:
+                html_content = f.read()
+                f.close()
+                # 2.1 准备发送给浏览器的数据---header
+                response = "HTTP/1.1 200 OK\r\n"
+                response += "\r\n"
+                # 2.2 准备发送给浏览器的数据---boy
+                # response += "hahahhah"
 
-        try:
-            f = open("/Users/jason/Study/html" + file_name, "rb")
-        except:
-            response = "HTTP/1.1 404 NOT FOUND\r\n"
-            response += "\r\n"
-            response += "------file not found-----"
-            new_socket.send(response.encode("utf-8"))
+                # 将response header发送给浏览器
+                new_socket.send(response.encode("utf-8"))
+                # 将response body发送给浏览器
+                new_socket.send(html_content)
         else:
-            html_content = f.read()
-            f.close()
-            # 2.1 准备发送给浏览器的数据---header
-            response = "HTTP/1.1 200 OK\r\n"
-            response += "\r\n"
-            # 2.2 准备发送给浏览器的数据---boy
-            # response += "hahahhah"
+            # py结尾，那么就是动态资源请求
+            hearder = "HTTP/1.1 200 OK\r\n"
+            hearder += "\r\n"
 
-            # 将response header发送给浏览器
-            new_socket.send(response.encode("utf-8"))
-            # 将response body发送给浏览器
-            new_socket.send(html_content)
+            body = mini_frame.login()
+
+            response = hearder + body
+            # 发送response给浏览器
+            new_socket.send(response.encode("gbk"))
 
         # 关闭套接
         new_socket.close()
