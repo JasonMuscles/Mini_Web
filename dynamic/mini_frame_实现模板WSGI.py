@@ -1,9 +1,13 @@
 
 def index():
-    return """主页信息"""
+    with open("./templates/index.html") as f:
+        content = f.read()
+    return content
 
-def login():
-    return "登录页面"
+def center():
+    with open("./templates/center.html") as f:
+        content = f.read()
+    return content
 
 def application(env, start_response):
     start_response('200 OK', [('Content-Type', 'text/html;charset=GBK')])
@@ -12,7 +16,7 @@ def application(env, start_response):
     # PATH_INFO:/index.py
     if file_name == "/index.py":
         return index()
-    elif file_name == "/login.py":
-        return login()
+    elif file_name == "/center.py":
+        return center()
     else:
         return 'Hello World!  Jaso中国'

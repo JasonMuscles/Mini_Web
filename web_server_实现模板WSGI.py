@@ -1,8 +1,7 @@
 import socket
 import re
 import multiprocessing
-import time
-import mini_frame_字典WSGI
+from dynamic import mini_frame_实现模板WSGI
 
 
 class WSGIServer(object):
@@ -47,7 +46,7 @@ class WSGIServer(object):
         # 非py结尾，那么就不是动态资源请求
         if not file_name.endswith(".py"):
             try:
-                f = open("/Users/jason/Study/html" + file_name, "rb")
+                f = open("./static" + file_name, "rb")
             except:
                 response = "HTTP/1.1 404 NOT FOUND\r\n"
                 response += "\r\n"
@@ -71,7 +70,7 @@ class WSGIServer(object):
             env = dict()
             env['PATH_INFO'] = file_name
             # PATH_INFO:/index.py
-            body = mini_frame_字典WSGI.application(env, self.set_response_header)
+            body = mini_frame_实现模板WSGI.application(env, self.set_response_header)
 
             header = "HTTP/1.1 %s\r\n" % self.status
             
